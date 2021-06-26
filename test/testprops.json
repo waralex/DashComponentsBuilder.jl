@@ -1,0 +1,45 @@
+{
+    "test.js" : {
+        "props" : {
+            "while" :{
+                "type" : {"name" : "string"}
+            },
+            "notype" : {
+                "aaa" : "bbbb"
+            },
+            "func" : {
+                "type" : {"name" : "func"}
+            },
+            "sym" : {
+                "type" : {"name" : "symbol"}
+            },
+            "instanceOf" : {
+                "type" : {"name" : "instanceOf"}
+            },
+            "type_string" : {
+                "type" : {"name" : "string"}
+            },
+            "wrongFlow" : {
+                "flowType" :
+                {
+                    "name" : "signature",
+                    "type" : "int"
+                }
+            },
+            "flow_signature" : {
+                "flowType" :
+                {
+                    "name" : "signature",
+                    "type" : "object"
+                }
+            },
+            "flow_string" : {
+                "flowType" :
+                {
+                    "name" : "rst",
+                    "type" : {"name" : "string"}
+                }
+            }
+        }
+    }
+}

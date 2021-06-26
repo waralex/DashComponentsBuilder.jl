@@ -1,0 +1,10 @@
+*.jl.cov
+*.jl.*.cov
+*.jl.mem
+.vscode
+Manifest.toml
+.DS_Store
+docs/build
+venv
+*.pyc
+tmp
