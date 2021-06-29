@@ -27,7 +27,7 @@ end
 Clone a git repository hosted at `url` into `source_path`, with a progress bar
 displayed to stdout.
 """
-function clone(url::String, source_path::String)
+function clone(url::AbstractString, source_path::AbstractString)
     # Clone with a progress bar
     p = Progress(0, 1, "Cloning: ")
     GC.@preserve p begin
