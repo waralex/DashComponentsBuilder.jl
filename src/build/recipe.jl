@@ -2,7 +2,8 @@ struct Recipe
     name ::String
     version ::VersionNumber
     py_package ::String
-    source ::BuildSource
+    type ::Symbol #"pypi" or "github"
+    source ::Union{BuildSource, Nothing}
     prefix ::String
     build_script ::Union{String, Nothing}
 end
@@ -12,7 +13,8 @@ function Recipe(state::BuildState)
         state.jl_pkg_name,
         VersionNumber(state.raw_pkg_meta[:version]),
         state.py_pkg_name,
-        state.source,
+        state.is_pypi ? :pypi : :github,
+        state.is_pypi ? state.source : nothing,
         state.jl_prefix,
         !isnothing(state.build_script) && !isempty(state.build_script) ? state.build_script : nothing
     )
@@ -23,14 +25,17 @@ function Base.write(io::IO, recipe::Recipe)
         :name => recipe.name,
         :version => string(recipe.version),
         :py_package => recipe.py_package,
-        :source => OrderedDict(
-            :url => recipe.source.url,
-            :hash => recipe.source.hash,
-        ),
+        :type => recipe.type,
         :prefix => recipe.prefix
     )
     if !isnothing(recipe.build_script)
         dict[:build_script] = recipe.build_script
+    end
+    if !isnothing(recipe.source)
+        dict[:source] = OrderedDict(
+            :url => recipe.source.url,
+            :hash => recipe.source.hash
+        )
     end
     write(io, YAML.write(dict))
 end
@@ -40,11 +45,16 @@ Base.print(io::IO, recipe::Recipe) = write(io, recipe)
 
 function Base.read(io::IO, ::Type{Recipe})
     dict = YAML.load(read(io, String))
+    source = haskey(dict, "source") ?
+        BuildSource(dict["source"]["url"], dict["source"]["hash"]) :
+        nothing
+
     return Recipe(
         dict["name"],
         VersionNumber(dict["version"]),
         dict["py_package"],
-        BuildSource(dict["source"]["url"], dict["source"]["hash"]),
+        dict["typw"] == "pypi" ? :pypi : :github,
+        source,
         dict["prefix"],
         haskey(dict, "build_script") ? dict["build_script"] : nothing
     )

@@ -8,8 +8,10 @@ Base.@kwdef mutable struct BuildState
     metadata_json ::Union{String,Nothing} = nothing
     requirements_file::Union{String, Nothing} = nothing
     py_pkg_name ::Union{String, Nothing} = nothing
+    py_pkg_version ::Union{String, Nothing} = nothing
     jl_pkg_name ::Union{String, Nothing} = nothing
     jl_prefix ::Union{String, Nothing} = nothing
+    is_pypi ::Bool = false
     raw_pkg_meta = nothing
     build_script ::Union{String, Nothing} = nothing
 end

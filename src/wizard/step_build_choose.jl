@@ -27,7 +27,7 @@ function step_build_choose!(state::WizardState)
         println(" found")
     else
         printstyled("metadata.json", bold=true, color = :red)
-        printstyled(" not found. Package build required", color = :red)
+        printstyled(" not found. Package build required\n", color = :red)
         is_prebuilt = false
     end
 
@@ -81,8 +81,8 @@ function step_build_choose!(state::WizardState)
         push!(build_options, "Build using nodeJS")
         push!(possible_steps, step_node_build!)
     end
-    push!(build_options, "Write custom build script")
-    push!(possible_steps, step_custom_build!)
+    #push!(build_options, "Write custom build script")
+    #push!(possible_steps, step_custom_build!)
 
     if length(build_options) > 1
         build_options[1] = build_options[1] * " (recommended)"

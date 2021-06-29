@@ -1,4 +1,8 @@
 function try_fill_requirements!(state::BuildState)
+    if isfile(source_path(state, "requirements-dev.txt"))
+        state.requirements_file = "requirements-dev.txt"
+        return true
+    end
     if isfile(source_path(state, "requirements.txt"))
         state.requirements_file = "requirements.txt"
         return true
