@@ -14,9 +14,9 @@ function Recipe(state::BuildState)
         VersionNumber(state.raw_pkg_meta[:version]),
         state.py_pkg_name,
         state.is_pypi ? :pypi : :github,
-        state.is_pypi ? state.source : nothing,
+        !state.is_pypi ? state.source : nothing,
         state.jl_prefix,
-        !isnothing(state.build_script) && !isempty(state.build_script) ? state.build_script : nothing
+        (!isnothing(state.build_script) && !isempty(state.build_script)) ? state.build_script : nothing
     )
 end
 
