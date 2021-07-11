@@ -115,6 +115,6 @@ end
 
 function make_docker_builder!(state::WizardState; force = false)
     if force || isnothing(state.builder)
-        state.builder = default_docker_builder(state.build_state)
+        state.builder = default_builder(state.build_state)
     end
 end

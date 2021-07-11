@@ -22,6 +22,7 @@ function init_buildstate(;kwargs...)
     return BuildState(;kwargs..., workspace = workspace)
 end
 
+
 source_dir(state::BuildState) = abspath(joinpath(state.workspace, "source"))
 
 dest_dir(state::BuildState) = abspath(joinpath(state.workspace, "dest"))
@@ -36,20 +37,3 @@ has_metadata_json(state::BuildState) = !isnothing(state.metadata_json)
 has_requirements(state::BuildState) = !isnothing(state.requirements_file)
 
 has_raw_pkg_meta(state::BuildState) = !isnothing(state.raw_pkg_meta)
-
-function build_recipe(state::BuildState)
-    result = OrderedDict(
-        "name" => state.jl_pkg_name,
-        "version" => string(VersionNumber(state.raw_pkg_meta[:version])),
-        "py_package" => state.py_pkg_name,
-        "source" => OrderedDict(
-            "url" => state.source.url,
-            "hash" => state.source.hash,
-        ),
-        "prefix" => state.jl_prefix
-    )
-    if !isnothing(state.build_script) && !isempty(state.build_script)
-        result["build_script"] = state.build_script
-    end
-    return result
-end

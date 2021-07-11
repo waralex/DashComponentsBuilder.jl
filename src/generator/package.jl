@@ -10,6 +10,7 @@ function cleanup_code_dir(dir)
     rm(joinpath(dir, "Manifest.toml"), force =true)
     rm(joinpath(dir, "Artifacts.toml"), force =true)
 end
+
 function generate_package(recipe::Recipe, state::BuildState, dir = dev_dir(recipe))
     cleanup_code_dir(dir)
     mkpath(dir)

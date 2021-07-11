@@ -9,3 +9,4 @@ venv
 *.pyc
 tmp
 test_gen
+deps/Registry

@@ -20,7 +20,6 @@ function step_generate!(state::WizardState)
         end
     end
     generate_package(state.recipe, state.build_state, fullpath)
-    msg = "Dev package `$(state.recipe.name)` generated into dir `$(fullpath)`"
     print("Dev package `")
     printstyled(state.recipe.name, bold=true)
     print("` writed into `")

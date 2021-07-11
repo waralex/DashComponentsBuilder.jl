@@ -1,0 +1,8 @@
+name: "DashEditorComponents"
+version: "0.0.2"
+py_package: "dash_editor_components"
+type: github
+prefix: "dec"
+source:
+  url: "https://github.com/waralex/dash-editor-components.git"
+  hash: "915d9d40935e778d00e2267677a558d44caceccb"

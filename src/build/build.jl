@@ -12,25 +12,25 @@ function clone_repo(state::BuildState)
     close(repo)
 end
 
-function pypi_cmds(state::BuildState)
+function pypi_cmds(state::BuildState, builder)
     cmds = String[]
-    push!(cmds, "pip install $(state.py_pkg_name)==\"$(state.py_pkg_version)\"")
-    push!(cmds, "python /misc/extract_pypi_source.py")
-    push!(cmds, "python /misc/extract_meta.py")
+    push!(cmds, "pip3 install $(state.py_pkg_name)==\"$(state.py_pkg_version)\"")
+    push!(cmds, extract_pypi_source_cmd(builder))
+    push!(cmds, extract_meta_cmd(builder))
     return cmds
 end
-function build_cmds(state::BuildState)
+function build_cmds(state::BuildState, builder)
     cmds = String[]
-    has_requirements(state) && push!(cmds, "pip install -r $(state.requirements_file)")
+    has_requirements(state) && push!(cmds, "pip3 install -r $(state.requirements_file)")
 
-    !isnothing(state.build_script) && push!(cmds, state.build_script)
+    !isnothing(state.build_script) && append!(cmds, split(state.build_script, "\n", keepempty = false))
 
-    push!(cmds, "python /misc/extract_meta.py")
+    push!(cmds, extract_meta_cmd(builder))
     return cmds
 end
 function run_build_cmd(state::BuildState, builder; verbose = false)
-    cmds = state.is_pypi ? pypi_cmds(state) : build_cmds(state)
-    r = read(builder, `/bin/bash -c "$(join(cmds, "\n"))"`; verbose = verbose)
+    cmds = state.is_pypi ? pypi_cmds(state, builder) : build_cmds(state, builder)
+    r = read(builder, `/bin/bash -c "$(join(cmds, ";"))"`; verbose = verbose)
     isnothing(r) && error("Build failed")
 end
 
@@ -52,22 +52,19 @@ function try_fill_buildstate!(state::BuildState)
         error("resources not found: \n $(join(failed_files, "\n"))")
     end
 end
-function build(recipe::Recipe)
-    state = init_buildstate()
-    state.source = recipe.source
-    state.py_pkg_name = recipe.py_package
-    state.jl_pkg_name = recipe.name
-    state.build_script = recipe.build_script
-    state.is_pypi = recipe.type == :pypi
+function build(recipe::Recipe; verbose = false)
+    state = init_buildstate(recipe)
 
-    if !(state.ispypi)
+    if state.is_pypi
+        mkpath(source_dir(state))
+    else
         clone_repo(state)
     end
 
     try_fill_requirements!(state)
-    builder = default_docker_builder(state)
+    builder = default_builder(state)
 
-    run_build_cmd(state, builder)
+    run_build_cmd(state, builder, verbose = verbose)
     try_fill_buildstate!(state)
 
     state.raw_pkg_meta = JSON3.read(

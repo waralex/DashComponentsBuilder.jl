@@ -15,7 +15,7 @@ function check_resources_dist(state::BuildState, dist_key)
         path = source_path(state, state.py_pkg_name, file)
         isexists = isfile(path)
         isimportant = endswith(file, ".js") || endswith(file, ".css")
-        return (name = file, exisits = isexists, important = isimportant)
+        return (name = file, exists = isexists, important = isimportant)
     end
 
     result = []
@@ -42,7 +42,7 @@ function check_resources_exists(state::BuildState)
     end
     result = true
     for f in files
-        if !f.exisits && f.important
+        if !f.exists && f.important
             result = false
             break
         end
@@ -54,8 +54,8 @@ function try_fill_raw_meta!(state::BuildState, builder)
     if has_requirements(state)
         push!(cmds, "pip install -r $(state.requirements_file)")
     end
-    push!(cmds, "python /misc/extract_meta.py")
-    r = read(builder, `/bin/bash -c "$(join(cmds, "\n"))"`; verbose = false)
+    push!(cmds, extract_meta_cmd(builder))
+    r = read(builder, `/bin/bash -c "$(join(cmds, ";"))"`; verbose = false)
     if !isnothing(r)
         meta = JSON3.read(
             read(dest_path(state, "package_meta.json"), String)

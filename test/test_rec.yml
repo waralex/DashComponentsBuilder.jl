@@ -1,7 +1,5 @@
 name: "DashTest"
 version: "1.2.0"
 py_package: "dash_test"
-source:
-  url: "http://gitgit"
-  hash: "aacccddd"
+type: pypi
 prefix: "dt"

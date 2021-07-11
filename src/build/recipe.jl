@@ -20,6 +20,18 @@ function Recipe(state::BuildState)
     )
 end
 
+function init_buildstate(recipe::Recipe;kwargs...)
+    state = init_buildstate(;kwargs...)
+    state.source = recipe.source
+    state.py_pkg_name = recipe.py_package
+    state.jl_pkg_name = recipe.name
+    state.build_script = recipe.build_script
+    state.is_pypi = recipe.type == :pypi
+    state.py_pkg_version = string(recipe.version)
+    state.jl_prefix = recipe.prefix
+    return state
+end
+
 function Base.write(io::IO, recipe::Recipe)
     dict = OrderedDict(
         :name => recipe.name,
@@ -53,7 +65,7 @@ function Base.read(io::IO, ::Type{Recipe})
         dict["name"],
         VersionNumber(dict["version"]),
         dict["py_package"],
-        dict["typw"] == "pypi" ? :pypi : :github,
+        dict["type"] == "pypi" ? :pypi : :github,
         source,
         dict["prefix"],
         haskey(dict, "build_script") ? dict["build_script"] : nothing

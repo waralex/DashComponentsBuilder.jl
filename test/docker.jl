@@ -1,7 +1,7 @@
 clean_test_ws() = rm("test_workspace", force = true, recursive = true)
 function make_test_ws()
     clean_test_ws()
-    mkpath("test_workspace")
+    mkpath("test_workspace/source")
 end
 
 @testset "build image" begin
@@ -17,16 +17,6 @@ end
     DCB.remove_image()
     state = DCB.BuildState()
     docker = @test_logs (:info, "Building docker image...") (:info, r"Docker image .* built") match_mode=:any  DCB.DockerBuilder(state)
-    @test docker.base_cmd == `docker run --rm `
-
-    docker = DCB.DockerBuilder(state, cwd = "/source")
-    @test docker.base_cmd == `docker run --rm -w /source `
-
-    make_test_ws()
-    state.workspace = realpath("test_workspace")
-
-    docker = DCB.DockerBuilder(state, cwd = "/source")
-    @test docker.base_cmd == `docker run --rm -w /source -v $(realpath("test_workspace")):/workspace:rw `
     clean_test_ws()
 end
 @testset "simple run" begin
@@ -40,8 +30,8 @@ end
 
     make_test_ws()
     state.workspace = realpath("test_workspace")
-    docker = DCB.DockerBuilder(state, cwd = "/workspace")
-    write("test_workspace/1.txt", "hello")
+    docker = DCB.DockerBuilder(state)
+    write("test_workspace/source/1.txt", "hello")
     buff = IOBuffer()
     res = read(docker, `/bin/bash -c "cat 1.txt"`)
     @test res == "hello"

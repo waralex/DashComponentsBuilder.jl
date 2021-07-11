@@ -19,13 +19,17 @@ module DashComponentsBuilder
     using REPL.TerminalMenus
     import MD5
     using UUIDs
+    import SHA:sha256
+    import Registrator
 
     const DOCKER_PATH = realpath(joinpath(@__DIR__, "..", "docker"))
     const DEFAULT_JULIA_COMPAT = "1.5"
     const DASH_BASE_COMPAT = "0.1.1"
+    const RECIPE_REGISTY = "waralex/DashComponentsRecipes"
 
     include("git/_git.jl")
     include("build/_build.jl")
+    include("deploy/_deploy.jl")
     include("generator/_generator.jl")
     include("wizard/_wizard.jl")
 end

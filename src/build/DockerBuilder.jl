@@ -2,7 +2,7 @@ const DOCKER_IMAGE_NAME = "dbc/components_builder"
 const DOCKER_IMAGE_VERSION = "latest"
 const AnyRedirectable = Union{Base.AbstractCmd, Base.TTY, IOStream}
 
-Base.@kwdef mutable struct DockerBuilder
+Base.@kwdef mutable struct DockerBuilder <: Builder
     image_name ::String
     base_cmd ::Cmd
 end
@@ -38,18 +38,22 @@ function build_image(image_name = DOCKER_IMAGE_NAME, image_version = DOCKER_IMAG
     end
 end
 
-function DockerBuilder(state::BuildState; cwd = nothing, envs = Dict())
+function DockerBuilder(state::BuildState)
     image_name = DOCKER_IMAGE_NAME
     build_image()
-    docker_cmd = `docker run --rm `
-    if !isnothing(cwd)
-        docker_cmd = `$(docker_cmd) -w $(cwd) `
-    end
+    cwd = "/workspace/source/"
+    docker_cmd = `docker run --rm -w $(cwd)`
 
     if !isnothing(state.workspace)
         docker_cmd = `$(docker_cmd) -v $(realpath(state.workspace)):/workspace:rw`
     end
-
+    envs = Dict(
+        "SOURCE_DIR" => "/workspace/source",
+        "DEST_DIR" => "/workspace/dest",
+    )
+    if !isnothing(state.py_pkg_name)
+        envs["PACKAGE_NAME"] = state.py_pkg_name
+    end
     # Build up environment mappings
     for (k, v) in envs
         docker_cmd = `$docker_cmd -e $k=$v`
@@ -60,11 +64,6 @@ end
 function default_docker_builder(state::BuildState)
     return DockerBuilder(state,
         cwd = "/workspace/source/",
-        envs = Dict(
-            "PACKAGE_NAME" => state.py_pkg_name,
-            "SOURCE_DIR" => "/workspace/source",
-            "DEST_DIR" => "/workspace/dest",
-        )
     )
 end
 
@@ -105,6 +104,9 @@ function Base.read(docker::DockerBuilder, cmd; verbose=true)
 
     return collect_stdout(oc)
 end
+
+extract_meta_cmd(builder::DockerBuilder) = "python /misc/extract_meta.py"
+extract_pypi_source_cmd(builder::DockerBuilder) = "python /misc/extract_pypi_source.py"
 
 function run_interactive(docker::DockerBuilder, cmd::Cmd; in = Base.stdin, out = Base.stdout, err = Base.stderr, history_file = nothing)
     function is_tty(s)

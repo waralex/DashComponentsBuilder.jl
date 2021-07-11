@@ -1,0 +1,12 @@
+name: "DashBootstrapComponents"
+version: "0.12.2"
+py_package: "dash_bootstrap_components"
+type: github
+prefix: "dbc"
+build_script: |
+  npm install
+  npm run build
+  
+source:
+  url: "https://github.com/facultyai/dash-bootstrap-components.git"
+  hash: "5ddde022e6224d42c42ef68727a74f0cad2cce30"

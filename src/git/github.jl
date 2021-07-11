@@ -1,5 +1,7 @@
 # This is a global github authentication token that is set the first time
 # we authenticate and then reuse
+const _github_auth = Ref{GitHub.Authorization}()
+
 function github_auth(;allow_anonymous::Bool=true)
     if !isassigned(_github_auth) || !allow_anonymous && isa(_github_auth[], GitHub.AnonymousAuth)
         # If the user is feeding us a GITHUB_TOKEN token, use it!
@@ -29,7 +31,7 @@ function obtain_token(; outs=stdout)
     headers = Dict{String, String}("User-Agent"=>"BinaryBuilder-jl",
         "Accept"=>"application/json")
 
-    # Request device authentication flow for BinaryBuilder OAauth APP
+    # Request device authentication flow for  OAauth APP
     resp = HTTP.post("https://github.com/login/device/code", headers,
         "client_id=8c496f428c48a1015b9e&scope=public_repo")
     if resp.status != 200
@@ -104,5 +106,22 @@ function obtain_token(; outs=stdout)
         println(outs)
 
         return token
+    end
+end
+function create_or_update_pull_request(repo, params; auth=github_auth())
+    try
+        return GitHub.create_pull_request(repo; params=params, auth=auth)
+    catch ex
+        # If it was already created, search for it so we can update it:
+        if Registrator.CommentBot.is_pr_exists_exception(ex)
+            prs, _ = GitHub.pull_requests(repo; auth=auth, params=Dict(
+                "state" => "open",
+                "base" => params["base"],
+                "head" => string(split(repo, "/")[1], ":", params["head"]),
+            ))
+            return GitHub.update_pull_request(repo, first(prs).number; auth=auth, params=params)
+        else
+            rethrow(ex)
+        end
     end
 end
