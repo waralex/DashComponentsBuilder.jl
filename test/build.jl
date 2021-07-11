@@ -129,7 +129,7 @@ end
         @test state.py_pkg_version == string(recipe.version)
         @test state.raw_pkg_meta[:version] == string(recipe.version)
     end
-    @testset "build repo npm" begin
+    #=@testset "build repo npm" begin
         recipe = read("test_recipes/DashBootstrapComponents/Recipe.yml", DCB.Recipe)
         @test recipe.name == "DashBootstrapComponents"
         state = DCB.build(recipe; verbose = true)
@@ -138,5 +138,5 @@ end
         @test !isnothing(state.raw_pkg_meta)
         @test state.py_pkg_version == string(recipe.version)
         @test state.raw_pkg_meta[:version] == string(recipe.version)
-    end
+    end=#
 end

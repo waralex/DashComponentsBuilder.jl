@@ -32,4 +32,5 @@ module DashComponentsBuilder
     include("deploy/_deploy.jl")
     include("generator/_generator.jl")
     include("wizard/_wizard.jl")
+    include("ci/_ci.jl")
 end

@@ -2,6 +2,10 @@
 # we authenticate and then reuse
 const _github_auth = Ref{GitHub.Authorization}()
 
+function preset_github_auth(token)
+    _github_auth[] = GitHub.authenticate(token)
+end
+
 function github_auth(;allow_anonymous::Bool=true)
     if !isassigned(_github_auth) || !allow_anonymous && isa(_github_auth[], GitHub.AnonymousAuth)
         # If the user is feeding us a GITHUB_TOKEN token, use it!
@@ -108,20 +112,5 @@ function obtain_token(; outs=stdout)
         return token
     end
 end
-function create_or_update_pull_request(repo, params; auth=github_auth())
-    try
-        return GitHub.create_pull_request(repo; params=params, auth=auth)
-    catch ex
-        # If it was already created, search for it so we can update it:
-        if Registrator.CommentBot.is_pr_exists_exception(ex)
-            prs, _ = GitHub.pull_requests(repo; auth=auth, params=Dict(
-                "state" => "open",
-                "base" => params["base"],
-                "head" => string(split(repo, "/")[1], ":", params["head"]),
-            ))
-            return GitHub.update_pull_request(repo, first(prs).number; auth=auth, params=params)
-        else
-            rethrow(ex)
-        end
-    end
-end
+
+gh_retry(f) = retry(f, delays =  ExponentialBackOff(; n=10, max_delay=30.0))
