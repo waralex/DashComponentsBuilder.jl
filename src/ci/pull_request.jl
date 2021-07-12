@@ -1,4 +1,10 @@
 function pull_request_ci(;env = ENV)
     println("is pull request ", is_pull_request(env = env))
     println("pull request number ", pull_request_number(env = env))
+    println("get_changed_filenames ", get_changed_filenames(env = env))
+    pr_num = pull_request_number(env = env)
+    pr = git_pull_request(pr_num)
+    println(pr)
+    files = get_changed_filenames(RECIPE_REGISTY, pr)
+    println(files)
 end

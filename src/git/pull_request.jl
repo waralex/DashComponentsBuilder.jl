@@ -16,7 +16,18 @@ function create_or_update_pull_request(repo, params; auth=github_auth())
     end
 end
 
+function get_pull_request(pr_number; auth = github_auth())
+    return gh_retry() do
+        GitHub.pull_request(api, registry, pr_number; auth=auth)
+    end
+end
+
 function get_changed_filenames(repo::GitHub.Repo, pull_request::GitHub.PullRequest)
     files = GitHub.pull_request_files(repo, pull_request; auth = github_auth())
+    return [file.filename for file in files]
+end
+
+function get_changed_filenames(repo, pull_request; auth = github_auth())
+    files = GitHub.pull_request_files(repo, pull_request; auth=auth)
     return [file.filename for file in files]
 end
