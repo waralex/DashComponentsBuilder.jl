@@ -4,7 +4,9 @@ function pull_request_ci(;env = ENV)
     println("get_changed_filenames ", get_changed_filenames(env = env))
     pr_num = pull_request_number(env = env)
     pr = git_pull_request(pr_num)
-    println(pr)
-    files = get_changed_filenames(RECIPE_REGISTY, pr)
+    repo = gh_retry() do
+        GitHub.repo(RECIPE_REGISTY)
+    end
+    files = get_changed_filenames(repo, pr)
     println(files)
 end
