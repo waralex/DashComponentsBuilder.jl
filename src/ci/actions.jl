@@ -25,7 +25,7 @@ function check_build(pr::CIPullRequest)
     @info "trying to build package..."
     ENV["BUILDER"] = "local"
     recipe = load_recipe(joinpath(pr.pr_repo_dir, pr.pkg_name))
-    build(recipe, verbose = false)
+    build(recipe, verbose = true)
 end
 
 function set_labels(pr::CIPullRequest)
