@@ -113,5 +113,3 @@ function obtain_token(; outs=stdout)
  end
 end
 gh_retry(f) = retry(f, delays =  ExponentialBackOff(; n=10, max_delay=30.0))()
-
-function add_label()

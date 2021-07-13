@@ -38,5 +38,4 @@ function gh_set_labels(repo::GitHub.Repo, pull_request::GitHub.PullRequest, labe
         params = Dict("labels"=> labels),
         auth = auth
     )
-
 end
