@@ -18,7 +18,7 @@ end
 
 function get_pull_request(pr_number; auth = github_auth())
     return gh_retry() do
-        GitHub.pull_request(api, registry, pr_number; auth=auth)
+        GitHub.pull_request(RECIPE_REGISTY, pr_number; auth=auth)
     end
 end
 
@@ -30,4 +30,22 @@ end
 function get_changed_filenames(repo, pull_request; auth = github_auth())
     files = GitHub.pull_request_files(repo, pull_request; auth=auth)
     return [file.filename for file in files]
+end
+
+function gh_set_labels(repo::GitHub.Repo, pull_request::GitHub.PullRequest, labels; auth = github_auth())
+    GitHub.gh_put_json(DEFAULT_API,
+        "/repos/$(GitHub.name(repo))/issues/$(GitHub.name(pull_request))/labels";
+        params = Dict("labels"=> labels),
+        auth = auth
+    )
+    #=
+     gh_patch_json(api, "/repos/$(name(repo))/issues/$(name(issue))"; options...)
+    =#
+    #=
+    await octokit.request('POST /repos/{owner}/{repo}/issues/{issue_number}/labels', {
+  owner: 'octocat',
+  repo: 'hello-world',
+  issue_number: 42
+})
+    =#
 end

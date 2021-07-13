@@ -14,3 +14,11 @@
     )
     @test DCB.pull_request_number(env = env) == 10
 end
+
+@testset "utils" begin
+    @test !DCB.is_recipe_pr_title("Dash components recipe: DashDaq")
+    @test DCB.is_recipe_pr_title("Dash components recipe: DashDaq-v10.2.1")
+    pkg, version = DCB.parse_recipe_pr_title("Dash components recipe: DashDaq-v10.2.1")
+    @test pkg == "DashDaq"
+    @test version == v"10.2.1"
+end
