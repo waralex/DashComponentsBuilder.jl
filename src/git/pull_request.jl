@@ -38,14 +38,5 @@ function gh_set_labels(repo::GitHub.Repo, pull_request::GitHub.PullRequest, labe
         params = Dict("labels"=> labels),
         auth = auth
     )
-    #=
-     gh_patch_json(api, "/repos/$(name(repo))/issues/$(name(issue))"; options...)
-    =#
-    #=
-    await octokit.request('POST /repos/{owner}/{repo}/issues/{issue_number}/labels', {
-  owner: 'octocat',
-  repo: 'hello-world',
-  issue_number: 42
-})
-    =#
+
 end
