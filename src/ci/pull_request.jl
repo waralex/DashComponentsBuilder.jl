@@ -36,6 +36,7 @@ function pull_request_opened_ci(;env = ENV)
 end
 
 function pull_request_merged_ci(;env = ENV)
+    println(env)
     pr_num = pull_request_number(env = env)
     pr = get_pull_request(pr_num)
     !is_recipe_pr(pr) && return
