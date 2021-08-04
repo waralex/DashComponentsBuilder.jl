@@ -9,7 +9,8 @@ struct CIPullRequest
 end
 
 function pull_request_opened_ci(;env = ENV)
-    pr_num = pull_request_number(env = env)
+    data = load_event_data(;env = env)
+    pr_num = data["number"]
     pr = get_pull_request(pr_num)
     !is_recipe_pr(pr) && return
 
@@ -36,9 +37,8 @@ function pull_request_opened_ci(;env = ENV)
 end
 
 function pull_request_merged_ci(;env = ENV)
-    data = JSON.parsefile(env["GITHUB_EVENT_PATH"])
-    println(data)
-    pr_num = pull_request_number(env = env)
+    data = load_event_data(;env = env)
+    pr_num = data["number"]
     pr = get_pull_request(pr_num)
     !is_recipe_pr(pr) && return
 

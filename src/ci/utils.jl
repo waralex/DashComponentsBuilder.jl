@@ -6,6 +6,9 @@ function pull_request_number(;env=ENV)
     isnothing(m) && error("Can't parse PR number")
     return parse(Int, m.captures[1])
 end
+function load_event_data(;env=ENV)
+    JSON.parsefile(env["GITHUB_EVENT_PATH"])
+end
 function pull_request_head_commit_sha(;env=ENV)
     !is_pull_request(;env = env) && error("it is not PR")
     file = get(env, "GITHUB_EVENT_PATH", nothing)
