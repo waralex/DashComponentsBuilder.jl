@@ -18,7 +18,7 @@ end
     @test ispath(pkg_path)
     Pkg.add(url = "https://github.com/plotly/DashBase.jl.git", rev = "generate_components")
     using DashBase
-    @test_nowarn Pkg.develop(url = pkg_path)
+    Pkg.develop(url = pkg_path)
     using DashDaq
     c = @test_nowarn daq_colorpicker(id = "ffff")
     @test c isa DashBase.Component
@@ -36,7 +36,7 @@ end
     @test ispath(pkg_path)
     Pkg.add(url = "https://github.com/plotly/DashBase.jl.git", rev = "generate_components")
     using DashBase
-    @test_nowarn Pkg.develop(url = pkg_path)
+    Pkg.develop(url = pkg_path)
     using DashEditorComponents
     c = @test_nowarn dec_pythoneditor(id = "ffff")
     @test c isa DashBase.Component
@@ -52,7 +52,7 @@ end
     @test ispath(pkg_path)
     Pkg.add(url = "https://github.com/plotly/DashBase.jl.git", rev = "generate_components")
     using DashBase
-    @test_nowarn Pkg.develop(url = pkg_path)
+    Pkg.develop(url = pkg_path)
     using DashDaq
     c = @test_nowarn daq_colorpicker(id = "ffff")
     @test c isa DashBase.Component

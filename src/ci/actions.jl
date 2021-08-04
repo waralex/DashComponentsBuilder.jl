@@ -21,10 +21,11 @@ function check_version(pr::CIPullRequest)
     end
 end
 
+recipe_dir(pr::CIPullRequest) = joinpath(pr.pr_repo_dir, pr.pkg_name)
+
 function check_build(pr::CIPullRequest)
     @info "trying to build package..."
-    ENV["BUILDER"] = "local"
-    recipe = load_recipe(joinpath(pr.pr_repo_dir, pr.pkg_name))
+    recipe = load_recipe(recipe_dir(pr))
     build(recipe, verbose = false)
 end
 

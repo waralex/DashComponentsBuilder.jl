@@ -106,7 +106,7 @@ end
     ENV["BUILDER"] = "docker"
 end
 
-@testset "build $type" for type in ["local", "docker"]
+@testset "build $type" for type in [#="local",=# "docker"]
     ENV["BUILDER"] = type
     @testset "build pypi" begin
         recipe = read("test_recipes/DashDaq/Recipe.yml", DCB.Recipe)

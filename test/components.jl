@@ -7,6 +7,7 @@ import JSON3
     @test  DCB.extract_component_name("/asss/ddd/ffff/A.r.w.rjs") == "A"
 end
 @testset "filter arg" begin
+
     props = JSON3.read(
         read("testprops.json", String)
     )["test.js"]["props"]
