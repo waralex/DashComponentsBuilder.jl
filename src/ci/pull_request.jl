@@ -49,6 +49,7 @@ function pull_request_merged_ci(;env = ENV)
     end
     main_repo_dir = clone_main_repo(repo)
     pr_repo_dir = pr_directory(env = env)
+
     pull_request = CIPullRequest(
         pr,
         pkg,
@@ -56,9 +57,12 @@ function pull_request_merged_ci(;env = ENV)
         pull_request_head_commit_sha(env = env),
         repo,
         pr_repo_dir,
-  main_repo_dir
+        main_repo_dir
     )
+
     check_changed_files(pull_request)
     check_version(pull_request)
+    deploy_token = env["DCB_GITHUB_TOKEN"]
+    preset_github_auth(deploy_token)
     deploy_package(recipe_dir(pull_request))
 end
