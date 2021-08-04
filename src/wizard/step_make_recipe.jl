@@ -55,7 +55,7 @@ function step_make_recipe!(state::WizardState)
             break
         end
     end
-    r = yn_prompt("Do you want deploy the recipe to recipes regestry?")
+    r = yn_prompt("Do you want deploy the recipe to recipes registry?")
     if r == :y
         deploy_recipe(recipe, no_build_check = true, make_pr = true)
     end
