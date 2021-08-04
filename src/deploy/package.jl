@@ -127,8 +127,7 @@ function push_repo(repo_name, deploy_dir, tag)
     gh_username = gh_get_json(DEFAULT_API, "/user"; auth = gh_auth)["login"]
     repo = LibGit2.GitRepo(deploy_dir)
     LibGit2.add!(repo, ".")
-    sig = LibGit2.Signature(gh_username, "")
-    commit = LibGit2.commit(repo, "dash core resources build $(tag)"; author=sig, committer=sig)
+    commit = LibGit2.commit(repo, "dash core resources build $(tag)")
     with_gitcreds(gh_username, gh_auth.token) do creds
         refspecs = ["refs/heads/main"]
         # Fetch the remote repository, to have the relevant refspecs up to date.
