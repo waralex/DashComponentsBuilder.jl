@@ -62,7 +62,7 @@ function pull_request_merged_ci(;env = ENV)
 
     check_changed_files(pull_request)
     check_version(pull_request)
-    deploy_token = env["DCB_GITHUB_TOKEN"]
+    deploy_token = env["DEPLOY_TOKEN"]
     preset_github_auth(deploy_token)
     deploy_package(recipe_dir(pull_request))
 end
