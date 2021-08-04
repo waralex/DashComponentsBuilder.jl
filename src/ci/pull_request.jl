@@ -36,7 +36,8 @@ function pull_request_opened_ci(;env = ENV)
 end
 
 function pull_request_merged_ci(;env = ENV)
-    println(env)
+    data = JSON.parsefile(env["GITHUB_EVENT_PATH"])
+    println(data)
     pr_num = pull_request_number(env = env)
     pr = get_pull_request(pr_num)
     !is_recipe_pr(pr) && return
